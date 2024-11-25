@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- <link
+    rel="stylesheet"
+    href="https://unpkg.com/browse/element-plus@2.8.2/dist/index.css" -->
+  <!-- /> -->
+  <!-- Import Vue 3 -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/vue@3"></script> -->
+  <!-- Import component library -->
+  <!-- <script src="https://unpkg.com/browse/element-plus@2.8.2/dist/index.full.min.js"></script> -->
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css">
+  <!-- import JavaScript -->
+  <script src="https://unpkg.com/element-plus"></script>
+</head>
+
+<body style="max-width: 1000px; margin: 0 auto;">
+  <el-container>
+    <p>201j1 2B
+      0.26x620 25t
+      齐边拉矫 
+    </p>
+    <el-main id="content" style="max-width:1200px; margin:0 auto;">
+      <!-- <div id="temp"> -->
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-input
+              v-model="baseText"
+              :autosize="{ minRows: 5, maxRows: 8}"
+              type="textarea"
+              placeholder="请把今日基价输入到这里..."
+            ></el-input>
+          </el-col>
+          <el-col :span="8">
+            <el-input
+              v-model="baseTextBk"
+              :autosize="{ minRows: 5, maxRows: 8}"
+              type="textarea"
+              disabled
+              placeholder="请把今日基价输入到这里..."
+            ></el-input>
+          </el-col>
+        </el-row>
+        <br>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-input
+              v-model="requestText"
+              :autosize="{ minRows: 5, maxRows: 8}"
+              type="textarea"
+              placeholder="请把需求输入到这里..."
+            ></el-input>
+          </el-col>
+          <el-col :span="8">
+            <el-input
+              v-model="requestTextBK"
+              :autosize="{ minRows: 5, maxRows: 8}"
+              type="textarea"
+              disabled
+              placeholder=""
+            ></el-input>
+          </el-col>
+        </el-row>
+        <!-- <textarea v-model="baseText" name="input-base-text" id="input-base-text" cols="30" rows="10"></textarea> -->
+        <br />
+        <!-- <textarea v-model="requestText" name="input-text" id="input-text" cols="30" rows="10"></textarea> -->
+        <el-input type="button" value="确定" id="ok-btn" style="width: 250px;"></el-input>
+        <br />
+        <br />
+        <el-row :gutter="20">
+          <el-col span="8">
+          <el-form-item label="材质">
+            <el-input v-model="material" type="text" id="material"><template #append>mm</template></el-input>
+          </el-form-item>
+        </el-col>
+          <el-col span="8">
+          <el-form-item label="厚度">
+            <el-input v-model="thickness" type="text" id="thickness"><template #append>mm</template></el-input>
+          </el-form-item>
+        </el-col>
+        
+        </el-row>
+        <el-row :gutter="20">
+          <el-col span="8">
+            <el-form-item label="宽度">
+              <el-input v-model="width" type="text" id="material"><template #append>mm</template></el-input>
+            </el-form-item>
+          </el-col>
+          
+          <el-col span="8">
+            <el-form-item label="重量">
+              <el-input v-model="weight" type="text" id="weight"><template #append>t</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="height!=''">
+          <el-col span="8">
+            <el-form-item label="长度">
+              <el-input v-model="height" type="text" id="height"><template #append>mm</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col span="8">
+          <el-form-item label="分条数">
+              <el-input v-model="slittingNum" style="width: 240px" placeholder="3" type="number" clearable />
+          </el-form-item>
+        </el-col>
+          <el-col span="8">
+          <el-form-item label="废料价">
+            <el-input v-model="scrapPrice" type="number" id="scrap-price"><template #append>元/吨</template></el-input>
+          </el-form-item>
+        </el-col>
+      </el-col>
+      
+        </el-row>
+      <!-- <br> -->
+        <el-row>
+          <el-col span="8">
+            <el-form-item label="利润">
+              <el-input v-model="profit" type="number" id="profit"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- <br />宽度：<el-input v-model="width" type="text" id="width"  style="width:250px"></el-input><span>mm</span>
+        <br />重量：<el-input v-model="weight" type="text" id="weight"  style="width:250px"></el-input><span>吨</span> -->
+        <!-- <br />长度(只板材有这项)：<input v-model="request.height" type="text" id="height"><span>mm</span> -->
+        <el-row :gutter="20">
+          <el-col span="8">
+          <el-radio-group v-model="tax">
+            <el-radio value="含税" border>含税</el-radio>
+            <el-radio value="不含税" border>不含税</el-radio>
+          </el-radio-group>
+          </el-col>
+        <el-col span="8">
+          <el-input v-model="taxPoint" style="width: 240px" placeholder="0.635" type="number" clearable />
+          </el-col>
+        </el-row>
+        <br/>
+        <el-row :gutter="20">
+          <el-col span="8">
+          <el-radio-group v-model="edge">
+            <el-radio value="毛边" border>毛边</el-radio>
+            <el-radio value="齐边" border>齐边</el-radio>
+          </el-radio-group>
+          </el-col>
+        </el-row>
+        <br/>
+        <el-row :gutter="20">
+          <el-col span="8"></el-col>
+          <el-radio-group v-model="level">
+            <el-radio value="拉矫" border>拉矫</el-radio>
+            <el-radio value="不拉矫" border>不拉矫</el-radio>
+          </el-radio-group>
+          </el-col>
+        <!-- <el-col span="8">
+          <el-input v-model="taxPoint" style="width: 240px" placeholder="0.635" type="number" clearable />
+          </el-col> -->
+        </el-row>
+        <br>
+        <el-row :gutter="20">
+          <el-col span="8"></el-col>
+          <el-radio-group v-model="film">
+            <el-radio value="贴膜" border>贴膜</el-radio>
+            <el-radio value="不贴膜" border>不贴膜</el-radio>
+          </el-radio-group>
+          </el-col>
+        </el-row>
+        <br/>
+        <el-row :gutter="20">
+          <el-col span="8">
+          <el-radio-group v-model="surface">
+            <el-radio value="2B" border>2B</el-radio>
+            <el-radio value="6K" border>6K</el-radio>
+            <el-radio value="8K" border>8K</el-radio>
+            <el-radio value="单抛" border>单抛</el-radio>
+            <el-radio value="双抛" border>双抛</el-radio>
+            <el-radio value="压花" border>压花</el-radio>
+            <el-radio value="磨砂" border>磨砂</el-radio>
+          </el-radio-group>
+          </el-col>
+        </el-row>
+        <br>
+        <el-row :gutter="20">
+          <el-col span="8">
+          <el-radio-group v-model="anneal">
+            <el-radio value="正常" border>正常</el-radio>
+            <el-radio value="制品" border>制品</el-radio>
+            <el-radio value="拉伸" border>拉伸</el-radio>
+            <el-radio value="深拉" border>深拉</el-radio>
+          </el-radio-group>
+          </el-col>
+        </el-row>
+        <br>
+        <el-row :gutter="20">
+          <el-col span="8">
+            <el-input v-model="resultPreview" style="width: 240px" placeholder="0.635" clearable ></el-input>
+            
+          </el-form-item>
+          </el-col>
+          <el-col span="8">
+            <el-radio-group model-value="default" aria-label="default" size="small">
+              <el-radio-button value="default">=</el-radio-button>
+            </el-radio-group></el-col>
+        <el-col span="8">
+          <el-input v-model="result" style="width: 240px" clearable />
+          </el-col>
+          <el-col span="8">
+            <el-radio-group model-value="default" aria-label="default" size="small">
+              <el-radio-button value="default">≈</el-radio-button>
+            </el-radio-group></el-col>
+            <el-col span="8">
+              <el-input v-model="plus" style="width: 240px" clearable />
+              </el-col>
+        </el-row>
+        <br>
+        <el-row>
+          <!-- <el-col> -->
+            <el-input v-model="resultPreviewWithXX" placeholder="" clearable ></el-input>
+            
+          <!-- </el-form-item> -->
+          <!-- </el-col> -->
+        </el-row>
+        <el-table v-if="tableSelectShow" :data="tableSelectData" stripe style="width: 100%">
+          <template v-for="item in Object.keys(tableSelectData[0])">
+            <el-table-column :prop="item" :label="item" width="80"></el-table-column>
+          </template>
+        </el-table>
+        <!-- <br />结果预览：<input type="text" id="result-preview"><span>=</span><input type="text" id="result"></input> -->
+        <br />
+        <el-row>
+          <el-col>
+            <!-- <el-text size="large">今日基价（{{tax=='inTax'?'含税':'不含税'}}）：</el-text> -->
+            <el-text size="large">今日基价（含税）：</el-text>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- <el-text size="large">304：</el-text> -->
+          <el-col :span="18">
+            <el-divider>201</el-divider>
+          </el-col>
+          
+        </el-row>
+        <el-row :gutter="40">
+          <el-col span="8">
+            <el-form-item label="J1">
+              <el-input v-model="base['j1']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col span="8">
+            <el-form-item label="J2">
+              <el-input v-model="base['j2']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="40">
+          <el-col span="8">
+            <el-form-item label="J3">
+              <el-input v-model="base['j3']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col span="8">
+            <el-form-item label="J4">
+              <el-input v-model="base['j4']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="40">
+          <el-col span="8">
+            <el-form-item label="J5">
+              <el-input v-model="base['j5']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <!-- <el-text size="large">304：</el-text> -->
+          <el-col :span="18">
+            <el-divider>304</el-divider>
+          </el-col>
+          
+        </el-row>
+        <el-row :gutter="40">
+          <el-col span="8">
+            <el-form-item label="304&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+              <el-input v-model="base['304']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col span="8">
+            <el-form-item label="30478&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+              <el-input v-model="base['30478']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+          
+        </el-row>
+        <el-row :gutter="40">
+          <el-col span="8">
+            <el-form-item label="304四尺">
+              <el-input v-model="base['304四尺']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col span="8">
+            <el-form-item label="30478四尺">
+              <el-input v-model="base['30478四尺']"><template #append>元/吨</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <br>
+        <!-- 今日基价（含税）：<br />
+        201：<br />
+        J1:&nbsp;<span id="j1">{{base['j1']}}</span>&nbsp;
+        J2:&nbsp;<span id="j2">{{base['j2']}}</span>&nbsp;
+        J3:&nbsp;<span id="j3">{{base['j3']}}</span>&nbsp;
+        J4:&nbsp;<span id="j4">{{base['j4']}}</span>&nbsp;
+        <br />
+        304：<br />
+        304:&nbsp;<span id="304">{{base['304']}}</span>&nbsp;
+        30478:&nbsp;<span id="30478">{{base['30478']}}</span>&nbsp;
+        304四尺:&nbsp;<span id="304四尺">{{base['304四尺']}}</span>&nbsp;
+        30478四尺:&nbsp;<span id="30478四尺">{{base['30478四尺']}}</span>&nbsp;
+        <br /> -->
+        <textarea v-model="resultText" name="input-result-text" id="input-result-text" cols="30" rows="10"></textarea>
+        <div id="tb-box">
+          <el-table v-if="tableSelectShow" :data="tableSelectData" stripe style="width: 100%">
+            <template v-for="item in Object.keys(tableSelectData[0])">
+              <el-table-column :prop="item" :label="item" width="80"></el-table-column>
+            </template>
+          </el-table>
+          <el-table :data="tableData" stripe style="width: 100%">
+            <template v-for="item in Object.keys(tableData[0])">
+              <el-table-column :prop="item" :label="item" width="80"></el-table-column>
+            </template>
+            <!-- <el-table-column prop="date" fixed label="Date" width="180" label="use show-overflow-tooltip"></el-table-column>
+                <el-table-column prop="name" label="Name" width="180" ></el-table-column>
+                <el-table-column prop="address" label="Address" ></el-table-column> -->
+          </el-table>
+        </div>
+      <!-- </div> -->
+    </el-main>
+  </el-container>
+  <script>
+
+    const { createApp } = Vue;
+
+    // 加价表数据
+    const businessData = `规格,压延/吨,拉矫/吨,分条/吨,边损（J4）,精密分条,单抛/吨,双抛/吨,压花/吨,磨砂,6K,8K,贴膜,平板,加工损耗,其他（15天0.005）,人工,纸筒木架,汇总
+0.68,500,60,45,169,250,140,230,220,112,297,371,186,100,32,40,10,40,7802
+0.67,550,60,45,73,250,140,230,220,113,302,377,189,100,32,40,10,40,2821
+0.66,550,60,45,73,250,140,230,220,115,306,383,192,100,32,40,10,40,2836
+0.65,550,60,45,73,250,140,230,220,117,311,388,195,100,32,40,10,40,2851
+0.64,550,60,45,73,250,140,230,220,119,316,395,198,100,32,40,10,40,2868
+0.63,550,60,45,73,250,140,230,220,121,321,401,201,100,32,40,10,40,2884
+0.62,600,60,45,74,250,140,230,220,123,326,407,204,100,32,40,10,40,2951
+0.61,600,60,45,74,250,140,230,220,125,331,414,207,100,32,40,10,40,2968
+0.6,600,60,45,74,250,140,230,220,127,337,421,211,100,32,40,10,40,2987
+0.59,600,60,45,74,250,140,230,220,129,342,428,214,100,32,40,10,40,3004
+0.58,600,60,45,74,250,140,230,220,131,348,435,218,100,32,40,10,40,3023
+0.57,650,60,45,75,250,140,230,220,133,354,443,222,100,32,40,10,40,3094
+0.56,650,60,45,75,250,140,230,220,136,361,451,226,100,32,40,10,40,3116
+0.55,650,60,45,75,250,140,230,220,138,367,459,230,100,32,40,10,40,3136
+0.54,650,60,45,75,250,140,230,220,141,374,468,234,100,32,40,10,40,3159
+0.53,650,60,45,75,250,140,230,220,143,381,476,238,100,32,40,10,40,3180
+0.52,750,60,45,76,250,160,250,220,146,388,485,243,100,32,40,10,40,3295
+0.51,750,60,45,76,250,160,250,220,149,396,495,248,100,32,40,10,40,3321
+0.5,750,60,45,76,250,160,250,220,152,404,505,253,100,32,40,10,40,3347
+0.49,750,60,45,76,250,160,250,220,155,412,515,258,100,32,40,10,40,3373
+0.48,750,60,45,76,250,160,250,220,158,421,526,263,100,32,40,10,40,3401
+0.47,800,60,45,78,250,160,250,220,161,430,537,269,100,32,40,10,40,3532
+0.46,800,60,45,78,250,160,250,220,165,439,549,275,100,32,40,10,40,3563
+0.45,800,60,45,78,250,160,250,220,169,449,561,281,100,32,40,10,40,3595
+0.44,800,60,45,78,250,160,250,220,172,459,574,287,100,32,40,10,40,3627
+0.43,800,60,45,78,250,160,250,220,176,470,587,294,100,32,40,10,40,3662
+0.42,850,60,45,79,250,160,250,220,181,481,601,301,100,32,40,10,40,3750
+0.41,850,60,45,79,250,160,250,220,185,493,616,308,100,32,40,10,40,3788
+0.4,850,60,45,79,250,160,250,220,190,505,631,316,100,32,40,10,40,3828
+0.39,850,60,45,79,300,160,250,220,195,518,647,324,100,32,40,10,40,3920
+0.38,850,60,45,79,300,160,250,220,200,531,664,332,100,32,40,10,40,3963
+0.37,1000,60,45,82,300,170,280,230,205,546,682,341,100,32,40,10,40,4213
+0.36,1000,60,45,82,300,170,280,230,211,561,701,351,100,32,40,10,40,4263
+0.35,1000,60,45,82,300,170,280,230,217,577,721,361,100,32,40,10,40,4315
+0.34,1000,60,45,82,300,170,280,230,223,594,742,371,100,32,40,10,40,4369
+0.33,1000,60,45,82,300,170,280,230,230,612,765,383,100,32,40,10,40,4429
+0.32,1050,90,60,85,300,170,280,230,237,631,789,395,100,32,40,10,40,4639
+0.31,1050,90,60,85,300,170,280,230,245,651,814,407,100,32,40,10,40,4704
+0.3,1050,90,60,85,300,170,280,230,253,673,841,421,100,32,40,10,40,4775
+0.29,1050,90,60,85,400,170,280,230,261,696,870,435,100,32,40,10,40,4949
+0.28,1150,90,60,87,400,180,300,230,271,721,901,451,100,32,40,10,40,5163
+0.27,1150,90,60,87,400,180,300,230,281,748,935,468,100,32,40,10,40,5251
+0.26,1150,90,60,87,400,180,300,230,292,776,970,486,100,32,40,10,40,5343
+0.25,1250,100,65,89,400,180,300,230,303,808,1009,505,100,32,40,10,40,5561
+0.24,1250,100,65,89,400,180,300,230,316,841,1051,526,100,32,40,10,40,5670
+0.23,1250,100,65,89,400,180,300,230,329,878,1097,549,100,32,40,10,40,5789
+0.22,1400,150,90,94,400,180,300,230,344,918,1147,574,100,32,40,10,40,6199
+0.21,1400,150,90,94,400,180,300,230,361,961,1201,601,100,32,40,10,40,6340
+0.2,1500,150,90,94,500,180,300,230,379,1009,1261,631,100,32,40,10,40,6596
+0.19,1600,150,90,97,500,230,400,-,-,-,-,664,100,32,40,10,40,4053
+0.18,1700,150,90,97,500,230,400,-,-,-,-,701,100,32,40,10,40,4090
+0.17,1800,150,120,100,500,250,450,-,-,-,-,742,100,32,40,10,40,4334
+0.16,1850,150,120,102,500,250,450,-,-,-,-,789,100,32,40,10,40,4483
+0.15,1950,150,120,104,500,300,560,-,-,-,-,841,100,32,40,10,40,4797
+0.14,2100,200,200,,,,,,,,,,,,,,,
+0.13,2200,200,200,,,,,,,,,,,,,,,
+0.12,2300,200,200,,,,,,,,,,,,,,,
+0.11,2400,200,200,,,,,,,,,,,,,,,
+0.1,2600,200,200,,,,,,,,,,,,,,,`;
+
+    const annealData = {
+      '正常': 0,
+      '制品': 50,
+      '拉伸': 100,
+      '深拉': 150,
+    };
+    // toao: 优化规则，将规则作为函数去判断，将工具方法移出 vue 实例
+    /**
+     * validation
+     * @param type:  类型
+     * @param text: 待提取的文本
+     * @return ''或提取的文本
+     **/
+    const validation = (type, text) => {
+      const materialRegex = /(201J|201#J|J|J#)[1-5]|304/gi;
+      const meterialReplaceRegex = /(201)?#?J#?/gi;
+      const specRegex = /\d\.?\d+(?:x|\*|×)\d+((?:x|\*|×)\d*)?/gi;
+      const thicknessRegex = /\d\.?\d\d?/g;
+      const widthRegex = /(?<=(\*|x|×))\d+/gi;
+      const heightRegex = /(?<=((\*|x|×)\d+(\*|x|×)))\d*/gi;
+      const weightRegex = /\d+\.?\d+(?=(t|吨))/gi;
+      const surfaceRegex = /(2B|单抛|双抛|6K|8K|磨砂|压花)/gi;
+      const annealRegex = /(正常|制品|拉伸|深拉)/gi;
+      const edgeRegex = /(齐|毛)边?/gi;
+      const taxRegex = /(不?含税)/gi;
+      const levelRegex = /不?拉矫/gi;
+      const filmRegex = /不?贴膜/gi;
+      switch (type) {
+        case 'material':
+          ret = (text.match(materialRegex) || [''])[0].replace(meterialReplaceRegex, '201J');
+          break;
+        case 'spec':
+        ret = (text.match(specRegex) || [''])[0];
+        break;
+        case 'thickness':
+          ret = ((text.match(specRegex) || [''])[0].match(thicknessRegex) || [''])[0];
+        break;
+        case 'width':
+          ret = ((text.match(specRegex) || [''])[0].match(widthRegex) || [''])[0];
+        break;
+        case 'height':
+          ret = ((text.match(specRegex) || [''])[0].match(heightRegex) || [''])[0];
+        break;
+        case 'weight':
+          ret = (text.match(weightRegex) || [''])[0];
+        break;
+        case 'surface':
+          ret = (text.match(surfaceRegex)||['2B'])[0];
+          break;
+        case 'edge':
+          ret = (text.match(edgeRegex) || ['毛边'])[0];
+        break;
+        case 'tax':
+          ret = (text.match(taxRegex)||['不含税'])[0];
+          break;
+          case 'level':
+          ret = (text.match(levelRegex) || ['不拉矫'])[0];
+          break;
+          case 'film':
+            ret = (text.match(filmRegex) || ['不贴膜'])[0];
+            break;
+            case 'anneal':
+              ret = (text.match(annealRegex) || ['正常'])[0];
+            break;
+        default:
+          break;
+      }
+      return ret;
+    };
+
+    const mFormat = (text) => {
+      let regex = /201J/gi;
+      return text.replace(regex, 'j');
+    }
+
+    // 绝非多此一举，只为了代码补全
+    const validType = {
+      'material': 'material',
+      'spec': 'spec',
+      'thickness': 'thickness',
+      'width': 'width',
+      'height': 'height',
+      'weight': 'weight',
+      'surface': 'surface',
+      'edge': 'edge',
+      'tax': 'tax',
+      'level': 'level',
+      'film': 'film',
+      'anneal':'anneal',
+    }
+
+    // 需求文本处理
+    const processData = function (text) {
+      let material = validation(validType.material, text);
+      let weight = validation(validType.weight, text);
+      let thickness = validation(validType.thickness, text);
+      let width = validation(validType.width,text);
+      let height = validation(validType.height, text);
+      let spec = validation(validType.spec,text);
+      let surface =  validation(validType.surface, text) || '2B';
+      let edge = validation(validType.edge, text) || '毛边';
+      let tax = validation(validType.tax, text) || '不含税';
+      let level = validation(validType.level, text) || '不拉矫';
+      let film = validation(validType.film, text) || '不贴膜';
+      let anneal = validation(validType.anneal, text) || '正常';
+      return {
+        material: material,
+        spec: spec,
+        thickness: thickness,
+        width: width,
+        weight: weight,
+        height: height,
+        surface: surface.replace(/k/gi, 'K'),
+        tax: tax,
+        edge: edge,
+        level: level,
+        film: film,
+        anneal:anneal,
+      }
+    };
+
+    // 将 csv 数据转为 json 数据
+    const CSVToJSON = function(csv) {
+          const lines = csv.split("\n");
+          const keys = lines[0].split(",");
+          return lines.slice(1).map((line) => {
+            return line.split(",").reduce((acc, cur, i) => {
+              const toAdd = {};
+              //console.log(i+"cur"+cur +"    kkeys[i]"+keys[i]);
+              if (i === 0) {
+                toAdd[keys[i]] = parseFloat(cur);
+              } else {
+                toAdd[keys[i]] = parseInt(cur);
+              }
+              //toAdd[keys[i]] = cur!='-'?parseInt(cur):0;
+              return { ...acc, ...toAdd };
+            }, {});
+          });
+        };
+    
+     // 基价文本处理
+    const basePriceProcess = function(text) {
+          let j1Regex = /(?<=j1.*)\d+/gi;
+          let j2Regex = /(?<=j2.*)\d+/gi;
+          let j3Regex = /(?<=j3.*)\d+/gi;
+          let j4Regex = /(?<=j4.*)\d+/gi;
+          let _304Regex = /(?<=304(?!(78|.*四尺)).*)\d+/gi;
+          let _30478Regex = /(?<=30478.*)\d+/gi;
+          let _304scRegex = /(?<=304(?!78).*四尺.*)\d+/gi;
+          let _30478scRegex = /(?<=30478.*四尺.*)\d+/gi;
+          let j1 = (text.match(j1Regex) || [''])[0];
+          let j2 = (text.match(j2Regex) || [''])[0];
+          let j3 = (text.match(j3Regex) || [''])[0];
+          let j4 = (text.match(j4Regex) || [''])[0];
+          let _304 = (text.match(_304Regex) || [''])[0];
+          console.log(_304)
+          let _30478 = (text.match(_30478Regex) || [''])[0];
+          let _304sc = (text.match(_304scRegex) || [''])[0];
+          let _30478sc = (text.match(_30478scRegex) || [''])[0];
+
+          return {
+            'j1': j1,
+            'j2': j2,
+            'j3': j3,
+            'j4': j4,
+            '304': _304,
+            '30478': _30478,
+            '304四尺': _304sc,
+            '30478四尺': _30478sc,
+          };
+        };
+        //console.log(CSVToJSON(businessData));
+
+    var app = createApp({
+      data() {
+        return {
+          baseText: '',
+          baseTextBk: `j1：7800；\nj2：7200；\nj3：7300；\nj4：8200；`,
+          requestText: '',
+          requestTextBK: '201j1 2B 0.26x690 25t 齐边拉矫',
+          material: '',
+          thickness: '',
+          width: '',
+          height: '',
+          weight: '',
+          resultPreview:'',
+          result: '',
+          edge:'毛边',
+          surface: '2B',
+          level: '不拉矫',
+          film: '不贴膜',
+          anneal: '正常',
+          slittingNum: '3',
+          scrapPrice: '4500',
+          profit: '150',
+          resultPreviewWithXX: '',
+          request: {
+            material: 'j1',
+            spec: '0.5*1240',
+            thickness: '0.5',
+            width: '1240',
+            height: '',
+            weight: '3',
+            surface: '2B',
+            tax: '不含税',
+            edge: '毛边',
+            level: '不拉矫',
+            film: '不贴膜',
+            anneal: '正常',
+            // slittingNum: '',
+            // scrapPrice: '',
+          },
+          price: {
+            '基价': '',
+            '压延': '',
+            '': '',
+          },
+          plus: '',
+          //basePrice:basePriceProcess(baseText),
+          base: {
+            'j1': 7600,
+            'j2': 6900,
+            'j3': 7200,
+            'j4': 8200,
+            'j5': 7200,
+            '304': 12900,
+            '30478': 12400,
+            '304四尺': 13030,
+            '30478四尺': 12500,
+          },
+          tableData: CSVToJSON(businessData),
+          tableSelectData: [],
+          tableSelectShow: false,
+          resultText: '',
+          tax: '不含税',
+          taxPoint: '0.935',
+        };
+      },
+      mounted() {
+        //console.log("hello");
+        //console.log(Object.keys(this.tableData[0]))
+      },
+      watch: {
+        baseText(oldBaseText, newBaseText) {
+          this.base = basePriceProcess(oldBaseText);
+          this.resultHandler();
+        },
+        requestText(oldRequestText, newRequestText) {
+          this.request = processData(oldRequestText);
+        },
+        thickness(oldThickness, newThickness) {
+          // max 最大的规格，min 最小的规格，这里的规格其实是厚度
+          let max = Math.max.apply(Math, this.tableData.map(function (o) {
+            return o["规格"];
+          }))
+          let min = Math.min.apply(Math, this.tableData.map(function (o) {
+            return o["规格"];
+          }))
+          if (oldThickness >= min) {
+            this.tableSelectData = [];
+            this.tableSelectData.push(this.tableData.find(array => array['规格'] == (oldThickness >= max ? max : oldThickness)) || {});
+            this.tableSelectShow = true;
+            this.request.thickness = oldThickness;
+            
+          } else {
+            this.request.thickness = -1;
+          }
+            this.resultHandler();
+        },
+        request(oldRequest, newRequest) {
+          this.thickness = this.request.thickness;
+          this.material = this.request.material;
+          this.width = this.request.width;
+          this.height = this.request.height;
+          this.weight = this.request.weight;
+          this.tax = this.request.tax;
+          this.surface = this.request.surface;
+          this.edge = this.request.edge;
+          this.level = this.request.level;
+          this.film = this.request.film;
+          this.anneal = this.request.anneal;
+          this.resultHandler();
+          console.log(parseFloat(this.taxPoint));
+          console.log(this.resultText)
+        },
+        tax(oldTax, newTax) {
+          this.resultHandler();
+        },
+
+        material(oldMaterial, newMaterial) {
+          // 验证 material 是否合理
+          let m = validation(validType.material, oldMaterial);
+          // 不匹配，改为默认 j2
+          if(m == '') {
+            m='201J2';
+          }
+          console.log(m);
+             
+          this.request.material = m;
+          this.resultHandler();
+        },
+        edge(o,n) {
+          //console.log(this.slittingNum + "------" + this.scrapPrice)
+          this.resultHandler();
+        },
+        surface(o,n) {
+          this.resultHandler();
+        },
+        level(o,n){
+          this.resultHandler();
+        },
+        anneal(o,n) {
+          this.resultHandler();
+        },
+        width(o,n) {
+          this.resultHandler();
+        },
+        profit(o,n) {
+          this.resultHandler();
+        },
+        film(o,n) {
+          this.resultHandler();
+        },
+        scrapPrice(o, n) {
+          this.resultHandler();
+        },
+        slittingNum(o,n) {
+          this.resultHandler();
+        },
+        weight(o,n) {
+          this.resultHandler();
+        },
+        scrapPrice: function(o,n) {
+          this.resultHandler();
+        },
+        width: function(o,n) {
+          this.resultHandler();
+        },
+        slittingNum: function(o,n) {
+          this.resultHandler();
+        },
+        resultPreview(o, n) {
+          try {
+            this.result = eval(o);
+          } catch (error) {
+            console.log(error); 
+          }
+        },
+        slittingNum(o,n) {
+          this.resultHandler();
+        },
+      /* =======start=======*/
+      /* 方法1
+      'base.j1': {
+        handler() {
+          this.resultHandler();
+        },
+      },
+      'base.j2': {
+        handler() {
+          this.resultHandler();
+        },
+      },
+      'base.j3': {
+        handler() {
+          this.resultHandler();
+        },
+      },
+      'base.j4': {
+        handler() {
+          this.resultHandler();
+        },
+      },
+      */
+      /* =======end=======*/
+      /* =======start=======*/
+      // 方法2：开销比较大
+      base: {
+        handler(o, n) {
+          //console.log(`o=${o.j1 + ' j2'+o.j2+ ' j3'+o.j3+ ' j2'+o.j4}***********n=${n.j1 + ' j2'+n.j2+ ' j3'+n.j3+ ' j2'+n.j4}******\n`)
+          this.resultHandler();
+        }, 
+        deep: true,
+      },
+      /*=======end=======*/
+      result(o,n) {
+        // this.plus = parseInt((parseInt(o)+50)/100)-parseInt((parseInt(o))/100)==1?parseInt(o/100+1)*100:parseInt(o/100)*100+50;
+        this.plus = (parseInt(o)%100==50 || parseInt(o)%100==0)?parseInt(o) : (parseInt(o%100)<50 ? parseInt(parseInt(o)/100)*100+50 : (parseInt(parseInt(o)/100)+1)*100);
+        },},
+
+      methods: {
+
+        // 加工费
+        resultProcCost: function(){
+          // this.request.thickness | this.request.surface | this.request.side | this.request.hardness
+          if (this.request.thickness == -1) return '';
+          let ret = '';
+          let ret2
+          ret = this.tableSelectData[0]['压延/吨'];
+          ret2 = ret + "(压延)"
+          console.log('ret0='+ret);
+          
+          let surfaceTmp = this.surface.replace(/(压花|单抛|双抛)/, function (x) {
+            return x + "/吨";
+          });
+          console.log('ret1='+ret);
+          let surfacePrice = this.surface == '2B' ? '': '+' + this.tableSelectData[0][surfaceTmp];
+          ret += surfacePrice;
+          ret2 += surfacePrice?surfacePrice+`(${this.surface})`: '';
+          console.log('ret2='+ret);
+          let filmPrice = this.film == '不贴膜'? '' : '+' + this.tableSelectData[0]['贴膜'];
+          ret += filmPrice;
+          ret2 += filmPrice?filmPrice+'(贴膜)':'';
+          let edgePrice = this.edge == '毛边'? '': '+' + this.slittingPriceHandler(this.slittingNum, this.tableSelectData[0]['分条/吨']);
+          ret += edgePrice;
+          ret2 += edgePrice?edgePrice+`(分条)`:'';
+          let levelPrice = this.level == '不拉矫' ? '' : '+' + this.tableSelectData[0]['拉矫/吨'];
+          ret += levelPrice;
+          ret2 += levelPrice?levelPrice+`(${this.level})`:'';
+          console.log('ret3='+ret);
+          let annealPrice = annealData[this.anneal] == 0? '' : '+' + annealData[this.anneal];
+          ret += annealPrice;
+          ret2 += (annealPrice?(annealPrice + `(${this.anneal})`):'');
+          console.log(ret2);
+          weightPlus = this.weightPriceHandler(this.weight)
+          let weightPlusPrice = weightPlus? '+' + this.weightPriceHandler(this.weight):'';
+          ret += weightPlusPrice;
+          ret2 += weightPlusPrice?weightPlusPrice + `(重量加价)`:'';
+          ret = this.tax == '含税' ? `(${ret})/${this.taxPoint}`:ret;
+          ret2 = this.tax == '含税' ? `(${ret2})/${this.taxPoint}`:ret2;
+          console.log("加工费："+ret);
+          return {ret,ret2};
+        },
+
+
+        resultHandler: function(){
+          //if(this.material != '');
+          let key = this.request.material.toString().replace(/201J|j/, 'j');
+          if(/304|j5/gi.test(key))return;
+          if (key != '' && this.tableSelectData.length!=0) {
+            let bprice = this.material != this.request.material? 0:this.base[key];
+            this.resultPreview = '';
+            console.log('this.base[tmp]'+this.base[key]);
+            basePricex=this.tax == '含税' ? bprice : parseInt(bprice) * parseFloat(this.taxPoint);
+            this.resultPreview = basePricex;
+            this.resultPreviewWithXX = basePricex + '(基价)';
+            procCost = this.resultProcCost();
+            
+            console.log('procCost:= '+procCost);
+            this.resultPreview += (procCost.ret? '+' + procCost.ret :'');
+            this.resultPreviewWithXX += ((procCost.ret2? '+' + procCost.ret2 :''));
+            
+          }
+          if(this.edge == '齐边') {
+            let lossPrice = this.lossHandler(this.width,eval(this.resultPreview),this.slittingNum,this.scrapPrice,1);
+            console.log(`lossPrice + ${lossPrice}`);
+            let lp = lossPrice==0 || isNaN(lossPrice)?'': '+' + lossPrice;
+            this.resultPreview += lp;
+            this.resultPreviewWithXX+=(lp?lp+'(边损)':'' );
+            //eval(this.resultPreview);
+          }
+          this.resultPreview += "+" + (this.tax == '含税'?this.profit+'/0.935':this.profit);
+          this.resultPreviewWithXX += '+' + this.profit + '(利润)' + (this.tax == '含税'?'/0.935':'');
+        },
+
+        // 价格加价
+        weightPriceHandler: function(w) {
+          console.log(w);
+          if (w < 7) {
+            return '300';
+          } else {
+            return '';
+          }
+        },
+
+        /**
+         * @augments：n 分条数，b 基本价格
+         * @return:   价格
+         **/
+        slittingPriceHandler: function(n,b) {
+          return n>3?(b+(n-3)*10):b;
+        },
+
+        /**
+         * @augments：w 宽度，c cost 成本，n 分条数，sp 废料价，o 选项 
+         * @return:   损耗价格
+         **/
+        lossHandler: function(w,c,n,sp,o) {
+          let ret = 0;
+          if (o == 0) {
+            ret = w < 400?10/400*(c-sp):0;
+            console.log("==============" + ret + "----" + w);
+          } else if(o == 1) {
+            ret = w < 400?10/(w*n)*(c-sp):0;
+          } else {
+            ret = 0;
+          }
+          console.log(ret+ "fjejfiejifj");
+          return parseInt(ret);
+        },
+
+        // //edgeHandler
+        // edgeHandler: function(w,c,n,sp,b) {
+        //   return this.slittingPriceHandler(w,c,n,sp,0) + '+' + this.lossHandler(n,b);
+        // }
+      }
+    });
+    app.use(ElementPlus);
+    app.mount('#content');
+    //var basePrice = basePriceProcess(baseText);
+    //console.log(baseText)
+  </script>
+</body>
+
+</html>
